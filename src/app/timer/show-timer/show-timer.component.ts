@@ -1,13 +1,23 @@
 import {
   AfterViewInit,
   Component,
+  DoCheck,
+  EventEmitter,
   Input,
   OnChanges,
   OnDestroy,
   OnInit,
+  Output,
   SimpleChanges,
 } from '@angular/core';
-import { interval, Observable, Subscription } from 'rxjs';
+import {
+  interval,
+  Observable,
+  ObservableInput,
+  Subject,
+  Subscription,
+  takeUntil,
+} from 'rxjs';
 import { map, take } from 'rxjs/operators';
 
 @Component({
@@ -16,7 +26,8 @@ import { map, take } from 'rxjs/operators';
   styleUrls: ['./show-timer.component.scss'],
 })
 export class ShowTimerComponent implements OnChanges, OnDestroy {
-  @Input() timerValue: {
+  @Input()
+  timerValue: {
     timer: number;
     actionType: string;
     date: string;
@@ -31,10 +42,16 @@ export class ShowTimerComponent implements OnChanges, OnDestroy {
     startCount: 0,
     pauseCount: 0,
   };
+  @Output() emitPausedValue = new EventEmitter<any>();
   countDownSubscriber: Subscription = new Subscription();
   constructor() {}
 
   ngOnChanges(changes: SimpleChanges) {
+    console.log("Timer from Show component: ", this.timerValue)
+    if (this.timerValue.timer <= 0 || this.timerValue.actionType.toLowerCase() == "pause") {
+      this.countDownSubscriber.unsubscribe();
+      return;
+    }
     this.countDownSubscriber = interval(1000)
       .pipe(
         take(this.timerValue.timer),
@@ -44,7 +61,11 @@ export class ShowTimerComponent implements OnChanges, OnDestroy {
         this.timerValue.timer = timer;
       });
   }
+
+  emitPausedValueToParent(){
+    this.emitPausedValue.emit(this.timerValue.timer);
+  }
   ngOnDestroy(): void {
-    //if (this.timerValue === 0) this.countDownSubscriber.unsubscribe();
+    this.countDownSubscriber.unsubscribe();
   }
 }

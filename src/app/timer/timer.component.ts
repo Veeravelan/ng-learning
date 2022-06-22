@@ -23,10 +23,16 @@ export class TimerComponent implements OnInit {
   };
   constructor() {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+
+  }
 
   fromShowTimer(timer: any) {
     this.timerValue = timer;
     console.log('Timer from child is: ', timer);
+  }
+  resetTimer(timer: any) {
+    this.timerValue = timer;
+    console.log('Timer from reset is: ', timer);
   }
 }

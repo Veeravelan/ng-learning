@@ -4,7 +4,7 @@
 </div>
 <div class="form-row">
   <button class="btn btn-primary" (click)="sendToParent()">Start/Pause</button>
-  <button class="btn btn-danger">Reset</button>
+  <button class="btn btn-danger" (click)="resetTimer()">Reset</button>
 </div>
 <div class="row" *ngIf="actionType === 'Pause'">
   <div class="col-md-12">
