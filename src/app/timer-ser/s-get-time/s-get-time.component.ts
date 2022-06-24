@@ -1,25 +1,14 @@
-import {
-  Component,
-  ElementRef,
-  EventEmitter,
-  Input,
-  OnChanges,
-  OnInit,
-  Output,
-  SimpleChanges,
-  ViewChild,
-} from '@angular/core';
-import { interval, take, map, Subscription } from 'rxjs';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Subscription, interval, take, map } from 'rxjs';
+import { HttpService } from 'src/app/services/http.service';
 
 @Component({
-  selector: 'app-get-timer',
-  templateUrl: './get-timer.component.html',
-  styleUrls: ['./get-timer.component.scss'],
+  selector: 'app-s-get-time',
+  templateUrl: './s-get-time.component.html',
+  styleUrls: ['./s-get-time.component.scss'],
 })
-export class GetTimerComponent implements OnInit, OnChanges {
-  @Output() emitTimer = new EventEmitter<any>();
-  @Output() resetTimerObj = new EventEmitter<any>();
-  @Input() updatedTime: any;
+export class SGetTimeComponent implements OnInit {
+  pauseLogArray: any[] = [];
   getTimerObj: {
     timer: number;
     actionType: string;
@@ -45,21 +34,15 @@ export class GetTimerComponent implements OnInit, OnChanges {
   @ViewChild('getTimer')
   getTimerIp!: ElementRef;
   countDownSubscriber: Subscription = new Subscription();
-  pauseLogArray: any[] = [];
-  constructor() {}
 
-  ngOnChanges(changes: SimpleChanges): void {
-    // console.log("Updated time is: ", this.pausedValue);
-  }
+  constructor(private http: HttpService) {}
 
-  ngOnInit(): void {
-    // console.log("Updated time is: ", this.updatedTime);
-  }
+  ngOnInit(): void {}
 
-  sendToParent() {
+  shareData() {
     this.countdownTimerObj();
     this.startCoundown();
-    this.emitTimer.emit(this.getTimerObj);
+    this.http.shareData(this.getTimerObj);
   }
 
   resetTimer() {
@@ -76,9 +59,10 @@ export class GetTimerComponent implements OnInit, OnChanges {
     this.getTimerObj.time = this.time;
     this.getTimerObj.startCount = 0;
     this.getTimerObj.pauseCount = 0;
-    this.getTimerObj = Object.assign({}, this.getTimerObj);
-    this.resetTimerObj.emit(this.getTimerObj);
+    this.http.shareData(this.getTimerObj);
+    this.http.countDownDataFn(this.getTimerObj.timer);
   }
+
   countdownTimerObj() {
     this.formatDateTime();
     this.count++;
@@ -96,17 +80,6 @@ export class GetTimerComponent implements OnInit, OnChanges {
       this.getTimerObj.pauseCount = this.pCount;
       this.pauseLogArray.push(this.getTimerObj.timer);
     }
-
-    this.getTimerObj = Object.assign({}, this.getTimerObj);
-  }
-
-  formatDateTime() {
-    // Format date
-    const date_format = (date: Date) => date.toISOString().slice(0, 10);
-    this.date = date_format(new Date());
-    // Format time
-    const time_format = new Date();
-    this.time = time_format.toLocaleTimeString();
   }
 
   startCoundown() {
@@ -124,8 +97,6 @@ export class GetTimerComponent implements OnInit, OnChanges {
     if (this.getTimerObj.startCount > 1) {
       this.getTimer = this.getTimerObj.timer;
     }
-    if (this.getTimerObj.timer) {
-    }
     this.countDownSubscriber = interval(1000)
       .pipe(
         take(+this.getTimer),
@@ -134,8 +105,19 @@ export class GetTimerComponent implements OnInit, OnChanges {
       .subscribe((timer) => {
         this.getTimer = timer;
         this.getTimerObj.timer = this.getTimer;
+        this.http.countDownDataFn(timer);
       });
   }
+
+  formatDateTime() {
+    // Format date
+    const date_format = (date: Date) => date.toISOString().slice(0, 10);
+    this.date = date_format(new Date());
+    // Format time
+    const time_format = new Date();
+    this.time = time_format.toLocaleTimeString();
+  }
+
   unsubscribeObs() {
     this.countDownSubscriber.unsubscribe();
   }

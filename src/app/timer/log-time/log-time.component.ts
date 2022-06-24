@@ -15,11 +15,12 @@ export class LogTimeComponent implements OnInit, OnChanges {
     startCount: number;
     pauseCount: number;
   };
-  @ViewChild('showLogs', {static: false})
-  showLogs: ElementRef;
+  @ViewChild('showLogs', { static: false })
+  showLogs!: ElementRef;
   constructor(private renderer:Renderer2) {}
 
   ngOnChanges(changes: SimpleChanges): void {
+    console.log("Log component: ", this.timerValue);
     if(this.timerValue.actionType == ""){
       return;
     }
