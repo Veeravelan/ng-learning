@@ -9,6 +9,7 @@ import { ProductsList } from './products.model';
 })
 export class EcomCatComponent implements OnInit {
   productLists: any;
+  skeletonLoadArr: number[] = [...Array(12).keys()];
   @ViewChild('tiles', {
     static: true
   }) myTile: ElementRef | undefined
@@ -17,7 +18,6 @@ export class EcomCatComponent implements OnInit {
 
   ngOnInit(): void {
     this.viewTypeIcon = this.myTile?.nativeElement;
-    console.log("this.viewTypeIcon", this.viewTypeIcon)
     this.shopService.getShopingList().subscribe((shoppingData) => {
       this.productLists = shoppingData
     });

@@ -34,7 +34,7 @@ export class DynamicContentComponent implements OnInit {
   public onscroll = (ev: Event) => {
     const windowInnerHeight = this.myTile.nativeElement.getBoundingClientRect().height;
     const bodyHeight = document.body.offsetHeight;
-    if (windowInnerHeight + this.scrolly >= bodyHeight - this.DEFAULT_BOTTOM_VALUE && this.scrolly > this.previousScrollPos) {
+    if (windowInnerHeight + this.scrolly >= (bodyHeight - windowInnerHeight) - this.DEFAULT_BOTTOM_VALUE && this.scrolly > this.previousScrollPos) {
       this.divArray.length++;
     }
   };

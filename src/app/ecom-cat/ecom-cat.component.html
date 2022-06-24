@@ -26,22 +26,41 @@
   </div>
 
   <div class="tiles" #tiles>
-    <div class="product anim" *ngFor="let product of productLists; let i = index">
-      <div class="tile" style="--delay: .4s">
-        <div class="product anim">
-          <div class="product-wrapper">
-            <div class="author-img__wrapper product-author">
-              <img class="author-img" [src]="product.image">
-            </div>
-            <div class="product-by" [innerText]="product.title" [title]="product.description"></div>
-            <div class="product-view">
-              <div>{{product.rating.rate}} <i class="bi bi-star-fill"></i> ({{product.rating.count}})</div>
-              <div [innerText]="product.price | currency"></div>
+    <ng-container *ngIf="productLists; else skeletonLoader">
+      <div class="product anim" *ngFor="let product of productLists; let i = index">
+        <div class="tile" style="--delay: .4s">
+          <div class="product anim">
+            <div class="product-wrapper">
+              <div class="author-img__wrapper product-author">
+                <img class="author-img" [src]="product.image" [alt]="product.title">
+              </div>
+              <div class="product-by" [innerText]="product.title" [title]="product.description"></div>
+              <div class="product-view">
+                <div>{{product.rating.rate}} <i class="bi bi-star-fill"></i> ({{product.rating.count}})</div>
+                <div [innerText]="product.price | currency"></div>
+              </div>
             </div>
           </div>
-
         </div>
       </div>
-    </div>
+    </ng-container>
+    <ng-template #skeletonLoader>
+      <div class="product anim rounded-0" *ngFor="let loader of skeletonLoadArr">
+        <div class="tile" style="--delay: .4s">
+          <div class="product-wrapper">
+            <div class="skeleton skeleton-image"></div>
+            <!-- <hr> -->
+            <div class="skeleton skeleton-text"></div>
+            <div class="skeleton skeleton-text"></div>
+            <div class="skeleton skeleton-text"></div>
+            <!-- <hr> -->
+            <div class="skeleton skeleton-text"></div>
+            <div class="skeleton skeleton-text"></div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
   </div>
+
+
 </section>

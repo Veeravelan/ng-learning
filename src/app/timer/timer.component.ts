@@ -1,11 +1,11 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 
 @Component({
   selector: 'app-timer',
   templateUrl: './timer.component.html',
   styleUrls: ['./timer.component.scss'],
 })
-export class TimerComponent implements OnInit {
+export class TimerComponent implements OnInit, OnChanges {
   timerValue: {
     timer: number;
     actionType: string;
@@ -22,17 +22,20 @@ export class TimerComponent implements OnInit {
     pauseCount: 0,
   };
   constructor() {}
+  ngOnChanges(changes: SimpleChanges): void {
 
+  }
+  pausedValue!: number;
   ngOnInit(): void {
 
   }
 
   fromShowTimer(timer: any) {
     this.timerValue = timer;
-    console.log('Timer from child is: ', timer);
+    console.log(this.timerValue);
   }
   resetTimer(timer: any) {
     this.timerValue = timer;
-    console.log('Timer from reset is: ', timer);
+    console.log(this.timerValue);
   }
 }
